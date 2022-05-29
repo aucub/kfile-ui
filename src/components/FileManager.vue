@@ -79,8 +79,14 @@
                                 <el-button text>
                                     <Icon icon="fluent:share-16-filled" />
                                 </el-button>
+                            </div>
+                        </template>
+                    </el-table-column>
+                    <el-table-column label="">
+                        <template #default="scope">
+                            <div>
                                 <el-dropdown>
-                                    <el-button text>
+                                    <el-button v-if="isRowHovered(scope.row)" text>
                                         <Icon icon="fluent:more-horizontal-16-filled" />
                                     </el-button>
                                     <template #dropdown>
