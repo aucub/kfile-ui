@@ -1,12 +1,12 @@
-import NextAuth, { type NextAuthOptions } from "next-auth";
+import NextAuth from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 
-export const authOptions: NextAuthOptions = {
+const handler = NextAuth({
     providers: [
         CredentialsProvider({
             name: 'Credentials',
             credentials: {
-                username: { label: "Username", type: "text", placeholder: "jsmith" },
+                username: { label: "Username", type: "email", placeholder: "jsmith@gmail.com" },
                 password: { label: "Password", type: "password" }
             },
             async authorize(credentials) {
@@ -14,13 +14,12 @@ export const authOptions: NextAuthOptions = {
                 if (!username || !password) {
                     throw new Error("Missing username or password");
                 }
-                const res = await fetch(process.env.BASE_URL + '/user/login?username=' + username + '&password=' + password, {
+                const res = await fetch(process.env.BASE_URL + '/user/login', {
                     method: 'POST',
                     body: JSON.stringify(credentials),
                     headers: { "Content-Type": "application/json" }
                 })
                 const { user, token } = await res.json();
-
                 if (res.ok && user) {
                     return { ...user, token: token }
                 }
@@ -42,8 +41,6 @@ export const authOptions: NextAuthOptions = {
     //         return session
     //     }
     // },
-};
-
-const handler = NextAuth(authOptions);
+});
 
 export { handler as GET, handler as POST };

@@ -32,13 +32,14 @@ export default function Form({ type }: { type: "login" | "register" }) {
             }
           });
         } else {
-          fetch("/api/auth/register", {
+          fetch(process.env.BASE_URL + '/user/register', {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
             },
             body: JSON.stringify({
-              username: e.currentTarget.username.value,
+              nickname: e.currentTarget.nickname.value,
+              mail: e.currentTarget.mail.value,
               password: e.currentTarget.password.value,
             }),
           }).then(async (res) => {
@@ -57,23 +58,65 @@ export default function Form({ type }: { type: "login" | "register" }) {
       }}
       className="flex flex-col space-y-4 bg-gray-50 px-4 py-8 sm:px-16"
     >
-      <div>
-        <label
-          htmlFor="username"
-          className="block text-xs text-gray-600 uppercase"
-        >
-          USERNAME
-        </label>
-        <input
-          id="username"
-          name="username"
-          type="username"
-          placeholder="panic@thedis.co"
-          autoComplete="username"
-          required
-          className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
-        />
-      </div>
+      {type === "login" && (
+        <>
+          <div>
+            <label
+              htmlFor="username"
+              className="block text-xs text-gray-600 uppercase"
+            >
+              USERNAME
+            </label>
+            <input
+              id="username"
+              name="username"
+              type="username"
+              placeholder="panic@thedis.co"
+              autoComplete="username"
+              required
+              className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+            />
+          </div>
+        </>
+      )}
+      {type === "register" && (
+        <>
+          <div>
+            <label
+              htmlFor="nickname"
+              className="block text-xs text-gray-600 uppercase"
+            >
+              NICKNAME
+            </label>
+            <input
+              id="nickname"
+              name="nickname"
+              type="nickname"
+              placeholder="jsmith"
+              autoComplete="nickname"
+              required
+              className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+            />
+          </div>
+          <div>
+            <label
+              htmlFor="mail"
+              className="block text-xs text-gray-600 uppercase"
+            >
+              MAIL
+            </label>
+            <input
+              id="mail"
+              name="mail"
+              type="mail"
+              placeholder="panic@thedis.co"
+              autoComplete="mail"
+              required
+              className="mt-1 block w-full appearance-none rounded-md border border-gray-300 px-3 py-2 placeholder-gray-400 shadow-sm focus:border-black focus:outline-none focus:ring-black sm:text-sm"
+            />
+          </div>
+        </>
+      )}
       <div>
         <label
           htmlFor="password"
@@ -92,8 +135,8 @@ export default function Form({ type }: { type: "login" | "register" }) {
       <button
         disabled={loading}
         className={`${loading
-            ? "cursor-not-allowed border-gray-200 bg-gray-100"
-            : "border-black bg-black text-white hover:bg-white hover:text-black"
+          ? "cursor-not-allowed border-gray-200 bg-gray-100"
+          : "border-black bg-black text-white hover:bg-white hover:text-black"
           } flex h-10 w-full items-center justify-center rounded-md border text-sm transition-all focus:outline-none`}
       >
         {loading ? (
