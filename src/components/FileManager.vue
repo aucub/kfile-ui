@@ -1,23 +1,117 @@
-<template>
-    <el-table ref="multipleTableRef" :data="tableData" style="width: 100%" @selection-change="handleSelectionChange">
+<template  #default="scope">
+    <div class="flex">
+        <el-button type="primary">
+            <Icon icon="fluent:arrow-upload-16-filled" />上传
+        </el-button>
+        <el-button type="primary">
+            <Icon icon="fluent:add-16-filled" />新建
+        </el-button>
+        <el-button v-if="multipleSelection.length > 1" @click="handleButtonClick">
+            <Icon icon="fluent:delete-16-filled" />删除
+        </el-button>
+        <el-button v-if="multipleSelection.length > 1" @click="handleButtonClick">
+            <Icon icon="fluent:folder-arrow-right-16-filled" />移动
+        </el-button>
+        <el-button v-if="multipleSelection.length > 1" @click="handleButtonClick">
+            <Icon icon="fluent:copy-add-20-filled" />复制
+        </el-button>
+        <el-button v-if="multipleSelection.length == 1" @click="handleButtonClick">
+            <Icon icon="fluent:arrow-download-16-filled" />下载
+        </el-button>
+        <el-button v-if="multipleSelection.length == 1" @click="handleButtonClick">
+            <Icon icon="fluent:share-16-filled" />分享
+        </el-button>
+        <el-button v-if="multipleSelection.length == 1 && multipleSelection[0].type === FileTypeEnum.Directory"
+            @click="handleButtonClick">
+            <Icon icon="fluent:folder-open-16-filled" />打开
+        </el-button>
+        <el-button v-if="multipleSelection.length == 1 && multipleSelection[0].type === FileTypeEnum.File"
+            @click="handleButtonClick">
+            <Icon icon="fluent:preview-link-16-filled" />预览
+        </el-button>
+        <el-dropdown v-if="multipleSelection.length == 1" @click="handleButtonClick">
+            <el-button>
+                <Icon icon="fluent:more-horizontal-16-filled" />更多
+            </el-button>
+            <template #dropdown>
+                <el-dropdown-menu>
+                    <el-dropdown-item><el-button @click="handleButtonClick">
+                            <Icon icon="fluent:rename-16-filled" />重命名
+                        </el-button></el-dropdown-item>
+                    <el-dropdown-item> <el-button @click="handleButtonClick">
+                            <Icon icon="fluent:folder-arrow-right-16-filled" />移动
+                        </el-button></el-dropdown-item>
+                    <el-dropdown-item><el-button @click="handleButtonClick">
+                            <Icon icon="fluent:copy-add-20-filled" />复制
+                        </el-button></el-dropdown-item>
+                    <el-dropdown-item><el-button @click="handleButtonClick">
+                            <Icon icon="fluent:delete-16-filled" />删除
+                        </el-button></el-dropdown-item>
+                    <el-dropdown-item v-if="multipleSelection[0].type === FileTypeEnum.File"><el-button
+                            @click="handleButtonClick">
+                            <Icon icon="fluent:history-16-filled" />历史版本
+                        </el-button></el-dropdown-item>
+                </el-dropdown-menu>
+            </template>
+        </el-dropdown>
+    </div>
+
+    <el-table ref="multipleTableRef" :data="tableData" style="width: 100%" :highlight-current-row=true
+        @selection-change="handleSelectionChange" @cell-mouse-enter="handleCellMouseEnter"
+        @cell-mouse-leave="handleCellMouseLeave">
         <el-table-column type="selection" width="55" />
-        <el-table-column property="name" label="名称" width="120" />
-        <el-table-column label="修改时间" width="120">
+        <el-table-column property="name" label="名称" sortable width="120" />
+        <el-table-column label="">
+            <template #default="scope">
+                <div v-if="isRowHovered(scope.row)">
+                    <el-button text>
+                        <Icon icon="fluent:arrow-download-16-filled" />
+                    </el-button>
+                    <el-button text>
+                        <Icon icon="fluent:share-16-filled" />
+                    </el-button>
+                    <el-dropdown>
+                        <el-button text>
+                            <Icon icon="fluent:more-horizontal-16-filled" />
+                        </el-button>
+                        <template #dropdown>
+                            <el-dropdown-menu>
+                                <el-dropdown-item><el-button @click="handleButtonClick">
+                                        <Icon icon="fluent:rename-16-filled" />重命名
+                                    </el-button></el-dropdown-item>
+                                <el-dropdown-item> <el-button @click="handleButtonClick">
+                                        <Icon icon="fluent:folder-arrow-right-16-filled" />移动
+                                    </el-button></el-dropdown-item>
+                                <el-dropdown-item><el-button @click="handleButtonClick">
+                                        <Icon icon="fluent:copy-add-20-filled" />复制
+                                    </el-button></el-dropdown-item>
+                                <el-dropdown-item><el-button @click="handleButtonClick">
+                                        <Icon icon="fluent:delete-16-filled" />删除
+                                    </el-button></el-dropdown-item>
+                                <el-dropdown-item v-if="scope.type === FileTypeEnum.File"><el-button
+                                        @click="handleButtonClick">
+                                        <Icon icon="fluent:history-16-filled" />历史版本
+                                    </el-button></el-dropdown-item>
+                            </el-dropdown-menu>
+                        </template>
+                    </el-dropdown>
+                </div>
+            </template>
+        </el-table-column>
+        <el-table-column label="修改时间" sortable width="120">
             <template #default="scope">{{ scope.row.date }}</template>
         </el-table-column>
-        <el-table-column property="size" label="大小" show-overflow-tooltip />
+        <el-table-column property="size" label="大小" sortable show-overflow-tooltip />
     </el-table>
-    <div style="margin-top: 20px">
-        <el-button @click="toggleSelection([tableData[1], tableData[2]])">Toggle selection status of second and third
-            rows</el-button>
-        <el-button @click="toggleSelection()">Clear selection</el-button>
-    </div>
 </template>
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { ElTable } from 'element-plus'
+import { ElTable, ElTooltip } from 'element-plus'
 import { FileTypeEnum, type FileItem } from '../typings/api.d'
+import { Icon } from '@iconify/vue';
+
+const hoveredRow = ref<string | null>(null)
 
 const multipleTableRef = ref<InstanceType<typeof ElTable>>()
 const multipleSelection = ref<FileItem[]>([])
@@ -71,4 +165,25 @@ const tableData: FileItem[] = [
         "size": 0
     }
 ]
+const handleEdit = (index: number, row: FileItem) => {
+    console.log(index, row)
+}
+const handleDelete = (index: number, row: FileItem) => {
+    console.log(index, row)
+}
+const handleButtonClick = () => {
+    // 处理按钮点击事件
+}
+
+const isRowHovered = (row: FileItem): boolean => {
+    return hoveredRow.value === row.id
+}
+
+const handleCellMouseEnter = (row: { id: string; }, column: any, cell: any) => {
+    hoveredRow.value = row.id;
+};
+
+const handleCellMouseLeave = (row: { id: string; }, column: any, cell: any) => {
+    hoveredRow.value = null;
+};
 </script>
