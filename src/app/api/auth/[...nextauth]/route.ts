@@ -19,7 +19,7 @@ const handler = NextAuth({
                     body: JSON.stringify(credentials),
                     headers: { "Content-Type": "application/json" }
                 })
-                const { user, token } = await res.json();
+                const { data: { user, token } } = await res.json();
                 if (res.ok && user) {
                     return { ...user, token: token }
                 }
@@ -29,18 +29,21 @@ const handler = NextAuth({
     ],
     secret: 'c77dd91406032672c0414af8ebc58199',
     session: { strategy: "jwt" },
-    // callbacks: {
-    //     async jwt({ token, user }) {
-    //         if (user) {
-    //             token.token = user.token.token
-    //             token.maxAge = user.token.maxAge
-    //         }
-    //         return token
-    //     },
-    //     async session({ session, token, user }) {
-    //         return session
-    //     }
-    // },
+    callbacks: {
+        async jwt({ token, user }) {
+            if (user) {
+                token.token = user.token.token
+                token.maxAge = user.token.maxAge
+                token.email = user.mail
+                token.name = user.nickname
+            }
+            console.log(token)
+            return token
+        },
+        async session({ session, token, user }) {
+            return session
+        }
+    },
 });
 
 export { handler as GET, handler as POST };

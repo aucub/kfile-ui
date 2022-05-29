@@ -6,7 +6,7 @@ export default function Home() {
     // 整个页面的容器
     <div className="min-h-screen bg-black flex flex-col text-gray-900">      {/* 头部 */}
       <header className="p-4 flex justify-between items-center bg-black">
-        <Image src="/favicon.ico" alt="Logo" className="h-8 w-8" />        {/* 导航栏 */}
+        <img src="/favicon.ico" alt="Logo" className="h-8 w-8" />        {/* 导航栏 */}
         <nav className="flex">
           <a href="/register" rel="noopener noreferrer">
             <Button variant="ghost" className="mr-2 text-white flex-1">注册</Button>
