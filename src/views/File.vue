@@ -3,7 +3,5 @@ import FileManager from '../components/FileManager.vue'
 </script>
 
 <template>
-    <main>
-        <FileManager />
-    </main>
+    <FileManager />
 </template>

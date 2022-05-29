@@ -1,36 +1,43 @@
 <template>
-    <n-space vertical :size="12">
-        <n-data-table :bordered="false" :single-line="false" :columns="columns" :data="data" :pagination="pagination" />
-        <n-data-table :bordered="false" :columns="columns" :data="data" :pagination="pagination" />
-        <n-data-table :bordered="false" :single-line="false" single-column :columns="columns" :data="data"
-            :pagination="pagination" />
-    </n-space>
+    <el-table ref="multipleTableRef" :data="tableData" style="width: 100%" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" />
+        <el-table-column property="name" label="名称" width="120" />
+        <el-table-column label="修改时间" width="120">
+            <template #default="scope">{{ scope.row.date }}</template>
+        </el-table-column>
+        <el-table-column property="size" label="大小" show-overflow-tooltip />
+    </el-table>
+    <div style="margin-top: 20px">
+        <el-button @click="toggleSelection([tableData[1], tableData[2]])">Toggle selection status of second and third
+            rows</el-button>
+        <el-button @click="toggleSelection()">Clear selection</el-button>
+    </div>
 </template>
 
-<script lang="ts">
-import { h, defineComponent } from 'vue'
-import { NTag, NButton, useMessage } from 'naive-ui'
-import type { DataTableColumns } from 'naive-ui'
+<script lang="ts" setup>
+import { ref } from 'vue'
+import { ElTable } from 'element-plus'
 import { FileTypeEnum, type FileItem } from '../typings/api.d'
 
-const createColumns = (): DataTableColumns<FileItem> => {
-    return [
-        {
-            title: '名称',
-            key: 'name'
-        },
-        {
-            title: '修改时间',
-            key: 'lastModifiedDate'
-        },
-        {
-            title: '大小',
-            key: 'size'
-        }
-    ]
+const multipleTableRef = ref<InstanceType<typeof ElTable>>()
+const multipleSelection = ref<FileItem[]>([])
+const toggleSelection = (rows?: FileItem[]) => {
+    if (rows) {
+        rows.forEach((row) => {
+            // TODO: improvement typing when refactor table
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
+            multipleTableRef.value!.toggleRowSelection(row, undefined)
+        })
+    } else {
+        multipleTableRef.value!.clearSelection()
+    }
+}
+const handleSelectionChange = (val: FileItem[]) => {
+    multipleSelection.value = val
 }
 
-const createData = (): FileItem[] => [
+const tableData: FileItem[] = [
     {
         "id": "abc123",
         "version": 1,
@@ -64,17 +71,4 @@ const createData = (): FileItem[] => [
         "size": 0
     }
 ]
-
-export default defineComponent({
-    setup() {
-        const message = useMessage()
-        return {
-            data: createData(),
-            columns: createColumns(),
-            pagination: {
-                pageSize: 10
-            }
-        }
-    }
-})
 </script>
