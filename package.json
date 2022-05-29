@@ -9,7 +9,16 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@iconify-json/carbon": "^1.1.26",
+    "@iconify-json/ci": "^1.1.13",
+    "@iconify-json/codicon": "^1.1.39",
+    "@iconify-json/fluent": "^1.1.45",
+    "@iconify-json/material-symbols": "^1.1.67",
+    "@iconify-json/solar": "^1.1.9",
     "@iconify-json/uil": "^1.1.7",
+    "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-select": "^2.0.0",
     "@radix-ui/react-slot": "^1.0.2",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",

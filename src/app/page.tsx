@@ -1,5 +1,4 @@
 // 导入所需的组件
-import Image from "next/image";
 import { Button } from "@/components/ui/button";// 导出默认的 Home 组件
 export default function Home() {
   return (
