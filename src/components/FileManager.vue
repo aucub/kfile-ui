@@ -1,91 +1,93 @@
 <template  #default="scope">
     <div class="common-layout">
         <el-container>
-            <el-header><el-breadcrumb separator="/">
-                    <el-breadcrumb-item :to="{ path: '/' }">homepage</el-breadcrumb-item>
-                    <el-breadcrumb-item><a href="/">promotion management</a></el-breadcrumb-item>
-                    <el-breadcrumb-item>promotion list</el-breadcrumb-item>
-                    <el-breadcrumb-item>promotion detail</el-breadcrumb-item>
+            <el-header><el-breadcrumb :separator-icon="ArrowRight">
+                    <el-breadcrumb-item :to="{ path: '/' }">文件</el-breadcrumb-item>
+                    <el-breadcrumb-item><a href="/">备份</a></el-breadcrumb-item>
                 </el-breadcrumb></el-header>
             <el-main>
                 <div class="flex">
-                    <el-button type="primary" @click="openFileUpload">
-                        <Icon icon="fluent:arrow-upload-16-filled" />上传
-                    </el-button>
-                    <el-dialog v-model="dialogFileUploadVisible">
-                        <FileUploader @close="dialogFileUploadVisible = false" />
-                    </el-dialog>
-                    <el-button type="primary">
-                        <Icon icon="fluent:add-16-filled" />新建
-                    </el-button>
-                    <el-button v-if="multipleSelection.length > 1" @click="handleButtonClick">
-                        <Icon icon="fluent:delete-16-filled" />删除
-                    </el-button>
-                    <el-button v-if="multipleSelection.length > 1" @click="handleButtonClick">
-                        <Icon icon="fluent:folder-arrow-right-16-filled" />移动
-                    </el-button>
-                    <el-button v-if="multipleSelection.length > 1" @click="handleButtonClick">
-                        <Icon icon="fluent:copy-add-20-filled" />复制
-                    </el-button>
-                    <el-button v-if="multipleSelection.length == 1" @click="handleButtonClick">
-                        <Icon icon="fluent:arrow-download-16-filled" />下载
-                    </el-button>
-                    <el-button v-if="multipleSelection.length == 1" @click="handleButtonClick">
-                        <Icon icon="fluent:share-16-filled" />分享
-                    </el-button>
-                    <el-button v-if="multipleSelection.length == 1 && multipleSelection[0].type === FileTypeEnum.Directory"
-                        @click="handleButtonClick">
-                        <Icon icon="fluent:folder-open-16-filled" />打开
-                    </el-button>
-                    <el-button v-if="multipleSelection.length == 1 && multipleSelection[0].type === FileTypeEnum.File"
-                        @click="handleButtonClick">
-                        <Icon icon="fluent:preview-link-16-filled" />预览
-                    </el-button>
-                    <el-dropdown v-if="multipleSelection.length == 1" @click="handleButtonClick">
-                        <el-button>
-                            <Icon icon="fluent:more-horizontal-16-filled" />更多
+                    <el-space wrap>
+                        <el-button type="primary" @click="openFileUpload">
+                            <Icon icon="fluent:arrow-upload-16-filled" />上传
                         </el-button>
-                        <template #dropdown>
-                            <el-dropdown-menu>
-                                <el-dropdown-item><el-button @click="handleButtonClick">
+                        <el-dialog v-model="dialogFileUploadVisible">
+                            <FileUploader @close="dialogFileUploadVisible = false" />
+                        </el-dialog>
+                        <el-button type="primary">
+                            <Icon icon="fluent:add-16-filled" />新建
+                        </el-button>
+                        <el-button type="primary" v-if="multipleSelection.length > 1" @click="handleButtonClick">
+                            <Icon icon="fluent:delete-16-filled" />删除
+                        </el-button>
+                        <el-button type="primary" v-if="multipleSelection.length > 1" @click="handleButtonClick">
+                            <Icon icon="fluent:folder-arrow-right-16-filled" />移动
+                        </el-button>
+                        <el-button type="primary" v-if="multipleSelection.length > 1" @click="handleButtonClick">
+                            <Icon icon="fluent:copy-add-20-filled" />复制
+                        </el-button>
+                        <el-button type="primary" v-if="multipleSelection.length == 1" @click="handleButtonClick">
+                            <Icon icon="fluent:arrow-download-16-filled" />下载
+                        </el-button>
+                        <el-button type="primary" v-if="multipleSelection.length == 1" @click="handleButtonClick">
+                            <Icon icon="fluent:link-16-filled" />分享
+                        </el-button>
+                        <el-button type="primary"
+                            v-if="multipleSelection.length == 1 && multipleSelection[0].type === FileTypeEnum.Directory"
+                            @click="handleButtonClick">
+                            <Icon icon="fluent:folder-open-16-filled" />打开
+                        </el-button>
+                        <el-button type="primary"
+                            v-if="multipleSelection.length == 1 && multipleSelection[0].type === FileTypeEnum.File"
+                            @click="handleButtonClick">
+                            <Icon icon="fluent:preview-link-16-filled" />预览
+                        </el-button>
+                        <el-dropdown type="primary" v-if="multipleSelection.length == 1" @click="handleButtonClick">
+                            <el-button type="primary">
+                                <Icon icon="fluent:more-horizontal-16-filled" />更多
+                            </el-button>
+                            <template #dropdown>
+                                <el-dropdown-menu>
+                                    <el-dropdown-item @click="handleButtonClick">
                                         <Icon icon="fluent:rename-16-filled" />重命名
-                                    </el-button></el-dropdown-item>
-                                <el-dropdown-item> <el-button @click="handleButtonClick">
+                                    </el-dropdown-item>
+                                    <el-dropdown-item @click="handleButtonClick">
                                         <Icon icon="fluent:folder-arrow-right-16-filled" />移动
-                                    </el-button></el-dropdown-item>
-                                <el-dropdown-item><el-button @click="handleButtonClick">
+                                    </el-dropdown-item>
+                                    <el-dropdown-item @click="handleButtonClick">
                                         <Icon icon="fluent:copy-add-20-filled" />复制
-                                    </el-button></el-dropdown-item>
-                                <el-dropdown-item><el-button @click="handleButtonClick">
+                                    </el-dropdown-item>
+                                    <el-dropdown-item @click="handleButtonClick">
                                         <Icon icon="fluent:delete-16-filled" />删除
-                                    </el-button></el-dropdown-item>
-                                <el-dropdown-item v-if="multipleSelection[0].type === FileTypeEnum.File"><el-button
+                                    </el-dropdown-item>
+                                    <el-dropdown-item v-if="multipleSelection[0].type === FileTypeEnum.File"
                                         @click="handleButtonClick">
                                         <Icon icon="fluent:history-16-filled" />历史版本
-                                    </el-button></el-dropdown-item>
-                            </el-dropdown-menu>
-                        </template>
-                    </el-dropdown>
+                                    </el-dropdown-item>
+                                </el-dropdown-menu>
+                            </template>
+                        </el-dropdown>
+                    </el-space>
                 </div>
 
                 <el-table ref="multipleTableRef" :data="tableData" style="width: 100%" :highlight-current-row=true
                     @selection-change="handleSelectionChange" @cell-mouse-enter="handleCellMouseEnter"
                     @cell-mouse-leave="handleCellMouseLeave">
                     <el-table-column type="selection" width="55" />
-                    <el-table-column property="name" label="名称" sortable width="120" />
-                    <el-table-column label="">
+                    <el-table-column property="name" label="名称" sortable />
+                    <el-table-column width="130" label="">
                         <template #default="scope">
                             <div v-if="isRowHovered(scope.row)">
                                 <el-button text>
                                     <Icon icon="fluent:arrow-download-16-filled" />
                                 </el-button>
                                 <el-button text>
-                                    <Icon icon="fluent:share-16-filled" />
+                                    <Icon icon="fluent:link-16-filled" />
                                 </el-button>
                             </div>
                         </template>
                     </el-table-column>
-                    <el-table-column label="">
+                    <el-table-column width="60" label="">
                         <template #default="scope">
                             <div>
                                 <el-dropdown>
@@ -94,22 +96,22 @@
                                     </el-button>
                                     <template #dropdown>
                                         <el-dropdown-menu>
-                                            <el-dropdown-item><el-button @click="handleButtonClick">
-                                                    <Icon icon="fluent:rename-16-filled" />重命名
-                                                </el-button></el-dropdown-item>
-                                            <el-dropdown-item> <el-button @click="handleButtonClick">
-                                                    <Icon icon="fluent:folder-arrow-right-16-filled" />移动
-                                                </el-button></el-dropdown-item>
-                                            <el-dropdown-item><el-button @click="handleButtonClick">
-                                                    <Icon icon="fluent:copy-add-20-filled" />复制
-                                                </el-button></el-dropdown-item>
-                                            <el-dropdown-item><el-button @click="handleButtonClick">
-                                                    <Icon icon="fluent:delete-16-filled" />删除
-                                                </el-button></el-dropdown-item>
-                                            <el-dropdown-item v-if="scope.type === FileTypeEnum.File"><el-button
-                                                    @click="handleButtonClick">
-                                                    <Icon icon="fluent:history-16-filled" />历史版本
-                                                </el-button></el-dropdown-item>
+                                            <el-dropdown-item @click="handleButtonClick">
+                                                <Icon icon="fluent:rename-16-filled" />重命名
+                                            </el-dropdown-item>
+                                            <el-dropdown-item @click="handleButtonClick">
+                                                <Icon icon="fluent:folder-arrow-right-16-filled" />移动
+                                            </el-dropdown-item>
+                                            <el-dropdown-item @click="handleButtonClick">
+                                                <Icon icon="fluent:copy-add-20-filled" />复制
+                                            </el-dropdown-item>
+                                            <el-dropdown-item @click="handleButtonClick">
+                                                <Icon icon="fluent:delete-16-filled" />删除
+                                            </el-dropdown-item>
+                                            <el-dropdown-item v-if="scope.type === FileTypeEnum.File"
+                                                @click="handleButtonClick">
+                                                <Icon icon="fluent:history-16-filled" />历史版本
+                                            </el-dropdown-item>
                                         </el-dropdown-menu>
                                     </template>
                                 </el-dropdown>
@@ -135,6 +137,7 @@
 <script lang="ts" setup>
 import { ref } from 'vue'
 import { ElTable, dayjs } from 'element-plus'
+import { ArrowRight } from '@element-plus/icons-vue'
 import { filesize } from "filesize";
 import { FileTypeEnum, type FileItem } from '../typings/api.d'
 import { Icon } from '@iconify/vue';
