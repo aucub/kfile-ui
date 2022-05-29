@@ -9,9 +9,12 @@
                 </el-breadcrumb></el-header>
             <el-main>
                 <div class="flex">
-                    <el-button type="primary">
+                    <el-button type="primary" @click="openFileUpload">
                         <Icon icon="fluent:arrow-upload-16-filled" />上传
                     </el-button>
+                    <el-dialog v-model="dialogFileUploadVisible">
+                        <FileUploader @close="dialogFileUploadVisible = false" />
+                    </el-dialog>
                     <el-button type="primary">
                         <Icon icon="fluent:add-16-filled" />新建
                     </el-button>
@@ -114,9 +117,15 @@
                         </template>
                     </el-table-column>
                     <el-table-column label="修改时间" sortable width="120">
-                        <template #default="scope">{{ scope.row.date }}</template>
+                        <template #default="scope">
+                            {{ formatDate(scope.row.lastModifiedDate) }}
+                        </template>
                     </el-table-column>
-                    <el-table-column property="size" label="大小" sortable show-overflow-tooltip />
+                    <el-table-column property="size" label="大小" sortable show-overflow-tooltip>
+                        <template #default="scope">
+                            {{ formatSize(scope.row.size) }}
+                        </template>
+                    </el-table-column>
                 </el-table>
             </el-main>
         </el-container>
@@ -125,11 +134,19 @@
 
 <script lang="ts" setup>
 import { ref } from 'vue'
-import { ElTable, ElTooltip } from 'element-plus'
+import { ElTable, dayjs } from 'element-plus'
+import { filesize } from "filesize";
 import { FileTypeEnum, type FileItem } from '../typings/api.d'
 import { Icon } from '@iconify/vue';
+import FileUploader from './FileUploader.vue';
 
 const hoveredRow = ref<string | null>(null)
+
+const dialogFileUploadVisible = ref(false);
+
+const openFileUpload = () => {
+    dialogFileUploadVisible.value = true;
+};
 
 const multipleTableRef = ref<InstanceType<typeof ElTable>>()
 const multipleSelection = ref<FileItem[]>([])
@@ -203,5 +220,13 @@ const handleCellMouseEnter = (row: { id: string; }, column: any, cell: any) => {
 
 const handleCellMouseLeave = (row: { id: string; }, column: any, cell: any) => {
     hoveredRow.value = null;
+};
+
+const formatDate = (date: Date) => {
+    return dayjs(date).format('YYYY-MM-DD HH:mm:ss')
+};
+
+const formatSize = (size: number) => {
+    return filesize(size)
 };
 </script>
